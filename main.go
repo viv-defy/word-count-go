@@ -7,19 +7,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var hello = &cobra.Command{
-	Use:   "hello",
-	Short: "count the number of words in a string",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Hello")
-	},
-}
-
 var greet = &cobra.Command{
 	Use:   "greet",
 	Short: "count the number of words in a string",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Greetings")
+		if h, _ := cmd.Flags().GetBool("hello"); h {
+			fmt.Println("Hello")
+		}
+		if g, _ := cmd.Flags().GetBool("greetings"); g {
+			fmt.Println("Greetings")
+		}
+		if w, _ := cmd.Flags().GetBool("welcome"); w {
+			fmt.Println("Welcome")
+		}
 	},
 }
 
@@ -28,7 +28,10 @@ var root = &cobra.Command{
 }
 
 func main() {
-	root.AddCommand(hello)
+	greet.Flags().BoolP("hello", "H", false, "Greets as `Hello`")
+	greet.Flags().BoolP("greetings", "g", false, "Greets as `Greetings`")
+	greet.Flags().BoolP("welcome", "w", false, "Greets as `Welcome`")
+
 	root.AddCommand(greet)
 
 	if err := root.Execute(); err != nil {
